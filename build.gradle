@@ -1,0 +1,49 @@
+//plugins {
+//  id "io.ratpack.ratpack-groovy" version "1.4.5"
+//}
+//
+
+apply plugin:'java'
+apply plugin:'idea'
+
+repositories {
+  mavenCentral()
+}
+
+//mainClassName = "Main"
+
+dependencies {
+  //runtime "org.slf4j:slf4j-simple:1.7.12"
+  compile "com.heroku.sdk:heroku-jdbc:0.1.1"
+  compile "org.postgresql:postgresql:9.4-1201-jdbc4"
+  // https://mvnrepository.com/artifact/com.ullink.slack/simpleslackapi
+  compile "com.ullink.slack:simpleslackapi:1.0.0"
+  // https://mvnrepository.com/artifact/org.glassfish.tyrus.bundles/tyrus-standalone-client
+  compile "org.glassfish.tyrus.bundles:tyrus-standalone-client:1.13.1"
+  // https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api
+  compile "javax.websocket:javax.websocket-api:1.1"
+
+  testCompile 'junit:junit:4.11'
+}
+
+configurations {
+  providedRuntime
+}
+
+jar {
+  manifest {
+
+    attributes 'Implementation-Title' : 'test',
+               'Main-Class': 'Main'
+  }
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
+task stage{
+  dependsOn build
+  dependsOn clean
+  build.mustRunAfter clean
+}
+
